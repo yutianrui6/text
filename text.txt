@@ -1,1 +1,105 @@
-echo"asd"
+<?php
+/**
+ * Created by PhpStorm.
+ * User: tianrui
+ * Date: 2018/1/3 0003
+ * Time: 19:06
+ */
+
+namespace app\index\controller;
+
+
+use think\Controller;
+
+class product extends Controller
+{
+    public function Product_list() {
+        $s=db('product_list')->paginate(2);
+        $this->assign('s',$s);
+        return $this->fetch();
+    }
+
+   public function edit_product(){
+       if(request()->isPost()){
+           $data = [
+               "name" => input("name"),
+                "price1"=>input ("price1"),
+                "price2"=>input("price2"),
+                "i"=>input("i")
+           ];
+           //$data['state'] = 0;
+           if(db('product_list')->insert($data)){
+               return $this->success("添加成功", 'product_list');
+           } else {
+               return $this->error("添加失败");
+           }
+       }
+       return $this->fetch('edit_product');
+   }
+
+   public function look(){
+       $s=db('product_list')->where('id','=',input('id'))->find();
+       $this->assign('s',$s);
+       return $this->fetch();
+
+   }
+  public function product_edit(){
+
+     if(request()->isPost()) {
+          $date = [
+             "ID"=>input("id"),
+              "name" => input("name"),
+              "price1" => input("price1"),
+              "price2" => input("price2"),
+              "i" => input("i")
+          ];
+          if (db('product_list')->update($date) ){
+              return $this->success("修改成功", 'product_list');
+          }
+          else {
+              return $this->error("修改失败");
+          }
+     }
+      $s=db('product_list')->where('ID','=',input('id'))->find();
+      $this->assign('s',$s);
+          return $this->fetch();
+  }
+
+    public function del(){
+     //   echo'aaa';
+        if(db('product_list')->where('id','=',input('id'))->delete()){
+            return $this->success('删除成功', 'product/product_list');
+        } else {
+            return $this->error('删除失败');
+        }
+    }
+
+    public function product_category(){
+        $s=db('product_category')->select();
+        $this->assign('s',$s);
+        return $this->fetch();
+    }
+    public function add_category()
+    {
+        if (request()->isPost()) {
+            $data = [
+                "name" => input("name"),
+                "num" => input("num"),
+                "d" => input("d")
+            ];
+            if (db('product_category')->insert($data)) {
+                return $this->success("添加成功", 'product_category');
+            } else {
+                return $this->error("添加失败");
+            }
+        }
+        return $this->fetch();
+    }
+
+    public function recycle_bin(){
+        $s=db('recycle_bin')->select();
+        $this->assign('s',$s);
+        return $this->fetch();
+    }
+
+  }
